@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+alembic
+httpx
+python-dotenv
+pydantic
+keepa
+pydantic-settings
+beautifulsoup4
+lxml

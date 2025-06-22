@@ -1,0 +1,1 @@
+COMPONENTS_ENUM = ["cpu", "cpu_cooler", "gpu", "motherboard", "ram", "storage", "psu", "case"]

@@ -1,0 +1,34 @@
+volumes:
+  postgres_data: {}
+
+networks:
+  internal: {}
+  external:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:17.2-alpine3.21
+    restart: always
+    user: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: "${POSTGRES__DB}"
+      POSTGRES_USER: "${POSTGRES__USER}"
+      POSTGRES_PASSWORD: "${POSTGRES__PASSWORD}"
+    expose:
+      - ${POSTGRES__PORT}
+    ports:
+      - "${POSTGRES__PORT}:5432"
+    networks:
+      - internal
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --username ${POSTGRES__USER} --dbname ${POSTGRES__DB}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
