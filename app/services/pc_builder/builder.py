@@ -56,6 +56,7 @@ class PCBuilder:
                 product = self._get_product_by_asin(self.overrides[component_type])
             else:
                 selector.component_type = component_type
+                selector.selected_components = self.selected_components
                 product = selector.select_best()
 
             if not product:
