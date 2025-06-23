@@ -6,6 +6,18 @@ from app.schemas.product import ProductCreate, ProductUpdate
 
 
 class CRUDProduct:
+    def _get_joinedload_attrs_option(self):
+        return (
+            joinedload(Product.cpu_attributes),
+            joinedload(Product.cpu_cooler_attributes),
+            joinedload(Product.case_attributes),
+            joinedload(Product.gpu_attributes),
+            joinedload(Product.motherboard_attributes),
+            joinedload(Product.power_supply_attributes),
+            joinedload(Product.ram_attributes),
+            joinedload(Product.storage_attributes),
+        )
+
     def create(self, db: Session, *, obj_in: ProductCreate) -> Product:
         db_obj = Product(**obj_in.model_dump())
         db.add(db_obj)
@@ -14,10 +26,17 @@ class CRUDProduct:
         return db_obj
 
     def get(self, db: Session, id_: int):
-        return db.get(Product, id_)
+        return db.get(Product, id_, options=(self._get_joinedload_attrs_option()))
 
     def get_multi(self, db: Session, *, page: int = 1, page_size: int = 20):
-        stmt = select(Product).offset((page - 1) * page_size).limit(page_size)
+        stmt = (
+            select(Product)
+            .options(
+                *self._get_joinedload_attrs_option()
+            )
+            .offset((page - 1) * page_size)
+            .limit(page_size)
+        )
         total = db.scalar(select(func.count()).select_from(Product))
         return db.scalars(stmt).all(), total
 
